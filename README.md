@@ -26,11 +26,10 @@ pip intall -e batchgenerators
 ### 3.1 Download Code
 * Download our code as zip, and unzip it.
 * Save our code in the same directory of TractSeg code, i.e. `Your_CodePath`.
-### 3.2 Network Pretraining
-#### (1) Data Preparation
+### 3.2 Data Preparation
 * Download the [HCP scans](https://db.humanconnectome.org) and the [gold standard of WM tracts](https://db.humanconnectome.org).
 * Extract the input peaks images from dMRI scans with 'Your_CodePath/TractSeg_Fewshot_Pretrain/`bin/Generate_Peaks.py`'.
-* Arrange the peaks and annotations of different subjects to the following structure -> `used for network testing`:
+* Arrange the peaks and annotations of different subjects to the following structure:
 ```
 Your_DataPath/HCP_for_training_COPY/subject_01/
             '-> mrtrix_peaks.nii.gz       (mrtrix CSD peaks;  shape: [x,y,z,9])
@@ -38,19 +37,37 @@ Your_DataPath/HCP_for_training_COPY/subject_01/
 Your_DataPath/HCP_for_training_COPY/subject_02/
       ...
 ```
-* Use 'Your_CodePath/extract_tract_label.py' to extract the annotations of the existing WM tracts from annotation file bundle_masks.nii.gz as bundle_masks_60.nii.gz.
-* Remove the non-brain area of data in `HCP_for_training_COPY` fold with 'Your_CodePath/TractSeg_Fewshot_Pretrain/`bin/Remove_Nonbrain.py`', and arrange the data to the following structure -> `used for network pretraining`:
+* Use 'Your_CodePath/extract_tract_label.py' to extract the annotations of the existing WM tracts from annotation file bundle_masks.nii.gz as bundle_masks_60.nii.gz；Use 'Your_CodePath/extract_tract_label.py' to extract the annotations of the 4 (6/12) novel WM tracts from bundle_masks.nii.gz and save it as bundle_masks_4.nii.gz (bundle_masks_6.nii.gz/ bundle_masks_12.nii.gz). Then the peaks and annotations in `HCP_for_training_COPY` fold are arranged as:
 ```
-Your_DataPath/HCP_preproc/subject_01/
+Your_DataPath/HCP_for_training_COPY/subject_01/
             '-> mrtrix_peaks.nii.gz       (mrtrix CSD peaks;  shape: [x,y,z,9])
-            '-> bundle_masks.nii.gz       (Reference bundle masks; shape: [x,y,z,nr_bundles])
-            '-> bundle_masks_60.nii.gz    (Reference bundle masks of the selected existing WM tracts; shape: [x,y,z,60])
-Your_DataPath/HCP_preproc/subject_02/
+            '-> bundle_masks_60.nii.gz       (Reference bundle masks; shape: [x,y,z,60])
+            '-> bundle_masks_4.niigz       (Reference bundle masks; shape: [x,y,z,4])
+            '-> bundle_masks_6.nii.gz       (Reference bundle masks; shape: [x,y,z,6])
+            '-> bundle_masks_12.nii.gz       (Reference bundle masks; shape: [x,y,z,12])
+Your_DataPath/HCP_for_training_COPY/subject_02/
       ...
 ```
+*  Select the subjects used for pretraining, training, and testing.
+* For the pretraining subjects, remove the non-brain area of the peaks image and bundle_masks_60.nii.gz in `HCP_for_training_COPY` fold with 'Your_CodePath/Remove_Nonbrain.py', and arrange the data to the following structure:
+```
+Your_DataPath_pretrain/HCP_preproc/subject_01/
+            '-> mrtrix_peaks.nii.gz       (mrtrix CSD peaks;  shape: [x,y,z,9])
+            '-> bundle_masks_60.nii.gz    (Reference bundle masks;  shape: [x,y,z,60])
+Your_DataPath_pretrain/HCP_preproc/subject_02/
+      ...
+```
+* For the single training subject, use 'Your_CodePath/Data_Augmentation' to generate synthetic annotated scans from the single scan in `HCP_for_training_COPY` fold; Remove the non-brain area of the peaks image and the novel tract annotation of the synthetic scans, and arrange the data to the following structure (use RC1 and 4 novel tracts as an example):
+```
+Your_DataPath_train/RC1_4/HCP_preproc/subject_01/
+            '-> mrtrix_peaks.nii.gz       (mrtrix CSD peaks;  shape: [x,y,z,9])
+            '-> bundle_masks_4.nii.gz    (Reference bundle masks;  shape: [x,y,z,4])
+Your_DataPath_train/ RC1_4/HCP_preproc/subject_02/
+      ...
+```
+### 3.3 Network Pretraining
 * Adapt 'Your_CodePath/TractSeg_Fewshot_Pretrain/tractseg/libs/system_config.py' and modify `DATA_PATH` to 'Your_DataPath'.
-* Adapt 'Your_CodePath/TractSeg_Fewshot_Pretrain/bin.ExpRunner' with the list of your subject IDs.
-#### (2) Pretrain the Network for Segmenting Existing WM Tracts
+* Adapt 'Your_CodePath/TractSeg_Fewshot_Pretrain/bin/ExpRunner' with the list of your subject IDs.
 * Set the temporary enviroment variable in terminal to our code path:
 ```
 export PYTHONPATH=$PYTHONPATH:Your_CodePath/TractSeg_Fewshot_Pretrain
@@ -60,52 +77,25 @@ export PYTHONPATH=$PYTHONPATH:Your_CodePath/TractSeg_Fewshot_Pretrain
 python run Your_CodePath/TractSeg_Fewshot_Pretrain/bin/ExpRunner
 ```
 * The `training output` is saved in 'Your_OutputPath/hcp_exp/my_custom_experiment'.
-
-
-
-
-
-
-
-
-* Use 'Your_CodePath/Data_Augmentation' to generate synthetic annotated scans from the single selected scan used for training.
-* Remove the non-brain area of data in `HCP_for_training_COPY` and the synthetic annotated scans fold with 'Your_CodePath/TractSeg_Fewshot_Pretrain/`bin/Remove_Nonbrain.py`', and arrange the data to the following structure -> `used for network training`:
-```
-Your_DataPath/HCP_preproc/subject_01/
-            '-> mrtrix_peaks.nii.gz       (mrtrix CSD peaks;  shape: [x,y,z,9])
-            '-> bundle_masks.nii.gz       (Reference bundle masks; shape: [x,y,z,nr_bundles])
-Your_DataPath/HCP_preproc/subject_02/
-      ...
-```
-
-
-
-### 3.4 Test the Trained Model
+### 3.4 Network Training
+* Modify the file 'Your_CodePath/TractSeg_Fewshot_Pretrain/tractseg/experiments/base.py', including the specific training stage (warmup stage or fine-tune stage), path of the pretrained model, the path of the trained data.
+* Adapt 'Your_CodePath/ TractSeg_Fewshot_Warmup /bin/ExpRunner' with the list of your subject IDs.
 * Set the temporary enviroment variable in terminal to our code path:
 ```
-export PYTHONPATH=$PYTHONPATH:Your_CodePath/TractSegWithLabelEmbedding
+export PYTHONPATH=$PYTHONPATH:Your_CodePath/TractSeg_Fewshot_Warmup
 ```
-* You can `directly test` the network using the provided data in the `example` fold and network model ([link1](https://drive.google.com/file/d/1O-DPM0vBV5Z58Bqt0_dC0kzqeThjSTjV/view?usp=sharing) & [link2](https://pan.baidu.com/s/1EjvdWTomN6D3inC7wrSpaw?pwd=5gv3)) after modifying the corresponding paths in 'Your_CodePath/TractSegWithLabelEmbedding/bin/`ExpRunner_test.py`':
+* `Train` the network:
 ```
-python run Your_CodePath/TractSegWithLabelEmbedding/bin/ExpRunner_test.py
+python run Your_CodePath/TractSeg_Fewshot_Pretrain/bin/ExpRunner
 ```
-* `Test` the network with `your trained model` and test data after modifing the corresponding paths in ExpRunner_test.py.
-
-
----
-`Note` that we did experiments through modificating the [TractSeg-v2.0](https://github.com/MIC-DKFZ/TractSeg/releases/tag/v2.0), and the main modifications are listed as follows:<br>
-1) Add extra scripts to prepare data as in `3.2 Data preparation` and test model as in 'TractSegWithLabelEmbedding/`bin/ExpRunner_test.py`'. <br>
-2) Add extra scripts to define network as in 'TractSegWithLabelEmbedding/tractseg/models/`unet_pytorch_deepup_simp1.py`' (used for network training) and 'TractSegWithLabelEmbedding/tractseg/models/`unet_pytorch_deepup_simp1_test.py`' (used for network testing). <br>
-3) Modify the loss settings as in 'TractSegWithLabelEmbedding/`tractseg/libs/trainer.py`' and 'TractSeg_labelembed/`tractseg/models/base_model.py`'.
-
-
-
-
-
-
-
-
-
-
-
-
+### 3.5 Test the Trained Model
+* Adapt 'Your_CodePath/TractSeg_Fewshot_Warmup/ bin/ExpRunner_test.py' with the trained model.
+* Set the temporary enviroment variable in terminal to our code path:
+```
+export PYTHONPATH=$PYTHONPATH:Your_CodePath/TractSeg_Fewshot_Warmup
+```
+* `Test` the network:
+```
+python run Your_CodePath/TractSeg_Fewshot_Warmup/bin/ExpRunner_test.py
+```
+*Fuse the results from the model trained with different data augmentation strategy with ‘Your_CodePath/ seg_ensemble.py’
