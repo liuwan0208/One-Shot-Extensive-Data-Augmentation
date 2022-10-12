@@ -26,10 +26,10 @@ pip intall -e batchgenerators
 ### 3.1 Download Code
 * Download our code as zip, and unzip it.
 * Save our code in the same directory of TractSeg code, i.e. `Your_CodePath`.
-### 3.2 Network Pretrain with the Annotations of Existing WM Tracts
-#### Pretraining Data Preparation
+### 3.2 Network Pretraining
+#### (1) Data Preparation
 * Download the [HCP scans](https://db.humanconnectome.org) and the [gold standard of WM tracts](https://db.humanconnectome.org).
-* Extract the input peaks images from dMRI scans with 'Your_CodePath/TractSegWithLabelEmbedding/`bin/Generate_Peaks.py`'.
+* Extract the input peaks images from dMRI scans with 'Your_CodePath/TractSeg_Fewshot_Pretrain/`bin/Generate_Peaks.py`'.
 * Arrange the peaks and annotations of different subjects to the following structure -> `used for network testing`:
 ```
 Your_DataPath/HCP_for_training_COPY/subject_01/
@@ -38,17 +38,19 @@ Your_DataPath/HCP_for_training_COPY/subject_01/
 Your_DataPath/HCP_for_training_COPY/subject_02/
       ...
 ```
-* Remove the non-brain area of data in `HCP_for_training_COPY` fold with 'Your_CodePath/TractSeg_Fewshot_Pretrain/`bin/Remove_Nonbrain.py`', and arrange the data to the following structure -> `used for network training`:
+* Use 'Your_CodePath/extract_tract_label.py' to extract the annotations of the existing WM tracts from annotation file bundle_masks.nii.gz as bundle_masks_60.nii.gz.
+* Remove the non-brain area of data in `HCP_for_training_COPY` fold with 'Your_CodePath/TractSeg_Fewshot_Pretrain/`bin/Remove_Nonbrain.py`', and arrange the data to the following structure -> `used for network pretraining`:
 ```
 Your_DataPath/HCP_preproc/subject_01/
             '-> mrtrix_peaks.nii.gz       (mrtrix CSD peaks;  shape: [x,y,z,9])
             '-> bundle_masks.nii.gz       (Reference bundle masks; shape: [x,y,z,nr_bundles])
+            '-> bundle_masks_60.nii.gz    (Reference bundle masks of the selected existing WM tracts; shape: [x,y,z,60])
 Your_DataPath/HCP_preproc/subject_02/
       ...
 ```
-* Adapt 'Your_CodePath/TractSegWithLabelEmbedding/`tractseg/libs/system_config.py`' and modify `DATA_PATH` to 'Your_DataPath/HCP_preproc'.
-* Adapt 'Your_CodePath/TractSegWithLabelEmbedding/`tractseg/data/subjects.py`' with the list of your subject IDs.
-#### Pretrain the Networks for Existing WM Tracts
+* Adapt 'Your_CodePath/TractSeg_Fewshot_Pretrain/tractseg/libs/system_config.py' and modify `DATA_PATH` to 'Your_DataPath'.
+* Adapt 'Your_CodePath/TractSeg_Fewshot_Pretrain/bin.ExpRunner' with the list of your subject IDs.
+#### (2) Pretrain the Network for Segmenting Existing WM Tracts
 * Set the temporary enviroment variable in terminal to our code path:
 ```
 export PYTHONPATH=$PYTHONPATH:Your_CodePath/TractSeg_Fewshot_Pretrain
@@ -59,6 +61,22 @@ python run Your_CodePath/TractSeg_Fewshot_Pretrain/bin/ExpRunner
 ```
 * The `training output` is saved in 'Your_OutputPath/hcp_exp/my_custom_experiment'.
 
+
+
+
+
+
+
+
+* Use 'Your_CodePath/Data_Augmentation' to generate synthetic annotated scans from the single selected scan used for training.
+* Remove the non-brain area of data in `HCP_for_training_COPY` and the synthetic annotated scans fold with 'Your_CodePath/TractSeg_Fewshot_Pretrain/`bin/Remove_Nonbrain.py`', and arrange the data to the following structure -> `used for network training`:
+```
+Your_DataPath/HCP_preproc/subject_01/
+            '-> mrtrix_peaks.nii.gz       (mrtrix CSD peaks;  shape: [x,y,z,9])
+            '-> bundle_masks.nii.gz       (Reference bundle masks; shape: [x,y,z,nr_bundles])
+Your_DataPath/HCP_preproc/subject_02/
+      ...
+```
 
 
 
