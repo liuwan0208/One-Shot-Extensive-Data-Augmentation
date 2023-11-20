@@ -29,167 +29,32 @@ def compute_rvd_score(predict, gt):
     rvd = abs(1 - np.sum(predict)/np.sum(gt))
     return rvd
 
-####----------------------------- bt_1.7_270--------------------------------------------------------------------------
-# test_dataset = "BT"
-# seg_size = [128,128,80]
-# tract_num = 10 # 4.6.10
-#
-# save_dir = '/data6/wanliu/TractSeg_Run/one_shot_ensemble/BT_1.7mm_270/Oneshot_A00_'+str(tract_num)
-# seg_size.append(tract_num) #[128,80,80,4..]
-# label_name = 'bundle_masks_'+str(tract_num)+'.nii.gz'
-
-##---------------------for 4 tract---------------------------
-# Pretrain = "One_step_pretrain" # "One_step"/"Two_step"
-# seg_dir_list=[
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x10/best_weights_ep253.npz',#0,
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x11/best_weights_ep288.npz',#1
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x12/best_weights_ep243.npz',#2
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x13/best_weights_ep248.npz',#3
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x14/best_weights_ep281.npz',#4
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x15/best_weights_ep232.npz']#5
-
-# Pretrain = "Two_step_pretrain"
-# seg_dir_list=[
-# '/data6/wanliu/TractSeg_Run/hcp_exp11/my_custom_experiment_x9/best_weights_ep190.npz',#0,
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x18/best_weights_ep124.npz',#1
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x19/best_weights_ep172.npz',#2
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x20/best_weights_ep230.npz',#3
-# '/data6/wanliu/TractSeg_Run/hcp_exp11/my_custom_experiment_x12/best_weights_ep285.npz',#4
-# '/data6/wanliu/TractSeg_Run/hcp_exp11/my_custom_experiment_x13/best_weights_ep174.npz']#5
-# emsemble_list=[[0,1,4,5], [2,3,4,5], [0,1,2,3,4,5]]
-
-##---------------------for 6 tract---------------------------
-# Pretrain = "One_step_pretrain" # "One_step"/"Two_step"
-# seg_dir_list=[
-# '/data6/wanliu/TractSeg_Run/hcp_exp8/my_custom_experiment_x23/best_weights_ep243.npz',#0,
-# '/data6/wanliu/TractSeg_Run/hcp_exp8/my_custom_experiment_x24/best_weights_ep177.npz',#1
-# '/data6/wanliu/TractSeg_Run/hcp_exp8/my_custom_experiment_x25/best_weights_ep137.npz',#2
-# '/data6/wanliu/TractSeg_Run/hcp_exp8/my_custom_experiment_x27/best_weights_ep267.npz',#3
-# '/data6/wanliu/TractSeg_Run/hcp_exp11/my_custom_experiment_x14/best_weights_ep248.npz',#4
-# '/data6/wanliu/TractSeg_Run/hcp_exp8/my_custom_experiment_x30/best_weights_ep150.npz']#5
-# emsemble_list=[[0,1,4,5], [2,3,4,5], [0,1,2,3,4,5]]
-
-# Pretrain = "Two_step_pretrain"
-# seg_dir_list=[
-# '/data6/wanliu/TractSeg_Run/hcp_exp8/my_custom_experiment_x28/best_weights_ep172.npz',#0,
-# '/data6/wanliu/TractSeg_Run/hcp_exp8/my_custom_experiment_x31/best_weights_ep77.npz',#1
-# '/data6/wanliu/TractSeg_Run/hcp_exp8/my_custom_experiment_x21/best_weights_ep288.npz',#2
-# '/data6/wanliu/TractSeg_Run/hcp_exp8/my_custom_experiment_x32/best_weights_ep94.npz',#3
-# '/data6/wanliu/TractSeg_Run/hcp_exp8/my_custom_experiment_x33/best_weights_ep176.npz',#4
-# '/data6/wanliu/TractSeg_Run/hcp_exp11/my_custom_experiment_x17/best_weights_ep256.npz']#5
-# emsemble_list=[[0,1,4,5], [2,3,4,5], [0,1,2,3,4,5]]
-
-# ##---------------------for 10 tract---------------------------
-# Pretrain = "One_step_pretrain" # "One_step"/"Two_step"
-# seg_dir_list=[
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x32/best_weights_ep179.npz',#0,
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x33/best_weights_ep236.npz',#1
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x34/best_weights_ep251.npz',#2
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x35/best_weights_ep134.npz']#3
-# emsemble_list=[[0,1,2,3]]
-
-# Pretrain = "Two_step_pretrain"
-# seg_dir_list=[
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x37/best_weights_ep242.npz',#0,
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x38/best_weights_ep294.npz',#1
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x36/best_weights_ep278.npz',#2
-# '/data6/wanliu/TractSeg_Run/hcp_exp7/my_custom_experiment_x39/best_weights_ep261.npz']#3
-# emsemble_list=[[0,1,2,3]]
-
-
-
 
 ####----------------------------- HCP_2.5_34--------------------------------------------------------------------------
 test_dataset = "HCP"
 seg_size = [72,87,72]
 tract_num = 4 # 4.6.12
 
-save_dir = '/data6/wanliu/TractSeg_Run/one_shot_ensemble/HCP_2.5mm_34/Oneshot_845458_'+str(tract_num)
+save_dir = '/data/TractSeg_Run/one_shot_ensemble/HCP_2.5mm_34/Oneshot_845458_'+str(tract_num)
 seg_size.append(tract_num)
 label_name = 'bundle_masks_'+str(tract_num)+'.nii.gz'
 
 ##---------------------for 4 tract---------------------------
 Pretrain = "One_step_pretrain" # "One_step"/"Two_step"
 seg_dir_list=[
-'/data6/wanliu/TractSeg_Run/hcp_exp9/my_custom_experiment_x18/best_weights_ep142.npz',#0,
-'/data6/wanliu/TractSeg_Run/hcp_exp9/my_custom_experiment_x19/best_weights_ep213.npz',#1
-'/data6/wanliu/TractSeg_Run/hcp_exp9/my_custom_experiment_x20/best_weights_ep234.npz',#2
-'/data6/wanliu/TractSeg_Run/hcp_exp12/my_custom_experiment_x21/best_weights_ep273.npz',#3
-'/data6/wanliu/TractSeg_Run/hcp_exp11/my_custom_experiment/best_weights_ep157.npz',#4
-'/data6/wanliu/TractSeg_Run/hcp_exp11/my_custom_experiment_x2/best_weights_ep285.npz']#5
+'/data/TractSeg_Run/hcp_exp9/my_custom_experiment_x18/best_weights_ep142.npz',#0,
+'/data/TractSeg_Run/hcp_exp9/my_custom_experiment_x19/best_weights_ep213.npz',#1
+'/data/TractSeg_Run/hcp_exp9/my_custom_experiment_x20/best_weights_ep234.npz',#2
+'/data/TractSeg_Run/hcp_exp12/my_custom_experiment_x21/best_weights_ep273.npz',#3
+'/data/TractSeg_Run/hcp_exp11/my_custom_experiment/best_weights_ep157.npz',#4
+'/data/TractSeg_Run/hcp_exp11/my_custom_experiment_x2/best_weights_ep285.npz']#5
 emsemble_list=[[0,1,4,5], [2,3,4,5], [0,1,2,3,4,5]]
-
-# Pretrain = "Two_step_pretrain"
-# seg_dir_list=[
-# '/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x14/best_weights_ep272.npz',#0,
-# '/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x16/best_weights_ep264.npz',#1
-# '/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x6/best_weights_ep240.npz',#2
-# '/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x7/best_weights_ep276.npz',#3
-# '/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x8/best_weights_ep266.npz',#4
-# '/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x12/best_weights_ep215.npz']#5
-# emsemble_list=[[0,1,4,5], [2,3,4,5], [0,1,2,3,4,5]]
-
-##---------------------for 6 tract---------------------------
-# Pretrain = "One_step_pretrain" # "One_step"/"Two_step"
-# seg_dir_list=[
-# '/data6/wanliu/TractSeg_Run/hcp_exp9/my_custom_experiment_x25/best_weights_ep118.npz',#0,
-# '/data6/wanliu/TractSeg_Run/hcp_exp9/my_custom_experiment_x26/best_weights_ep144.npz',#1
-# '/data6/wanliu/TractSeg_Run/hcp_exp9/my_custom_experiment_x29/best_weights_ep165.npz',#2
-# '/data6/wanliu/TractSeg_Run/hcp_exp9/my_custom_experiment_x30/best_weights_ep299.npz',#3
-# '/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x39/best_weights_ep178.npz',#4
-# '/data6/wanliu/TractSeg_Run/hcp_exp9/my_custom_experiment_x28/best_weights_ep293.npz']#5
-# emsemble_list=[[0,1,4,5], [2,3,4,5], [0,1,2,3,4,5]]
-
-# Pretrain = "Two_step_pretrain"
-# seg_dir_list=[
-# '/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x25/best_weights_ep94.npz',#0,
-# '/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x26/best_weights_ep126.npz',#1
-# '/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x27/best_weights_ep269.npz',#2
-# '/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x28/best_weights_ep286.npz',#3
-# '/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x29/best_weights_ep142.npz',#4
-# '/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x30/best_weights_ep218.npz']#5
-# emsemble_list=[[0,1,4,5], [2,3,4,5], [0,1,2,3,4,5]]
-
-# ##---------------------for 10 tract---------------------------
-# Pretrain = "One_step_pretrain" # "One_step"/"Two_step"
-# seg_dir_list=[
-# '/data6/wanliu/TractSeg_Run/hcp_exp9/my_custom_experiment_x31/best_weights_ep152.npz',#0,
-# '/data6/wanliu/TractSeg_Run/hcp_exp9/my_custom_experiment_x34/best_weights_ep103.npz',#1
-# '/data6/wanliu/TractSeg_Run/hcp_exp9/my_custom_experiment_x33/best_weights_ep266.npz',#2
-# '/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x35/best_weights_ep247.npz']#3
-# emsemble_list=[[0,1,2,3]]
-
-#Pretrain = "Two_step_pretrain"
-#seg_dir_list=[
-#'/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x31/best_weights_ep221.npz',#0,
-#'/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x32/best_weights_ep240.npz',#1
-#'/data6/wanliu/TractSeg_Run/hcp_exp10/my_custom_experiment_x33/best_weights_ep248.npz',#2
-#'/data6/wanliu/TractSeg_Run/hcp_exp11/my_custom_experiment_x6/best_weights_ep233.npz']#3
-#emsemble_list=[[0,1,2,3]]
-
-
-
-if test_dataset == "BT":
-    Test_peak_dir = '/data4/wanliu/BT_1.7mm_270/HCP_for_training_COPY'
-    test_sub = ['A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A07', 'C00', 'C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08']
-    # test_sub=['A01','A03','A04','A06','A07','C00','C01','C02','C03','C06','C07']
-    if tract_num == 4:
-        bundles = ['CST_left', 'CST_right', 'OR_left', 'OR_right']
-    elif tract_num == 6:
-        bundles = ['CST_left', 'CST_right', 'OR_left', 'OR_right', 'POPT_left', 'POPT_right']
-    elif tract_num == 10:
-        bundles = ['CST_left', 'CST_right', 'FPT_left', 'FPT_right', 'OR_left', 'OR_right', 'POPT_left', 'POPT_right',
-                   'UF_left', 'UF_right']
 
 
 if test_dataset == "HCP":
-    Test_peak_dir = '/data4/wanliu/HCP_2.5mm_341k/HCP_for_training_COPY'
-    test_sub = ["802844", "792766", "792564", "789373", "786569", "784565", "782561", "779370", "771354", "770352",
-                "695768", "690152", "687163", "685058", "683256", "680957", "679568", "677968", "673455", "672756",
-                "665254", "654754", "645551", "644044", "638049", "627549", "623844", "622236", "620434", "613538"]
-    # test_sub = ["802844", "792766", "792564", "789373", "782561", "779370", "771354", "770352",
-    #             "690152", "687163", "685058", "680957", "679568", "677968", "673455", "672756",
-    #             "665254", "654754", "645551", "638049", "623844", "622236", "620434", "613538"]
+    Test_peak_dir = '/data/HCP_2.5mm_341k/HCP_for_training_COPY'
+    test_sub = ["613538"]
+
     if tract_num == 4:
         bundles = ['CST_left', 'CST_right', 'OR_left', 'OR_right']
     elif tract_num == 6:
@@ -201,18 +66,15 @@ if test_dataset == "HCP":
 
 
 for sub in test_sub:
-    # print('sub', sub)
     for used_list in emsemble_list:#used_list:[0,1,4,5]
         seg_sum = np.zeros(seg_size)
         emsemble_type = ''
         num_aug = len(used_list)
         print('used_list:', used_list, 'num_aug:', num_aug)
         for used_index in used_list:#0
-            # print('used_index', used_index)
             used_model = seg_dir_list[used_index]
             save_path = used_model.split('/b')[0]
             test_epoch = used_model.split('/')[-1].split('_')[-1].split('.')[0]
-            # print('used_model', used_model)
             seg_path = join(save_path, "segmentation" + '_' + test_epoch, 'all_bund_seg', sub+'.nii.gz')
             seg_nii = nib.load(seg_path)
             seg_affine = seg_nii.affine

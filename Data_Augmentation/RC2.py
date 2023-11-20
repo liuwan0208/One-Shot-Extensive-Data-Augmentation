@@ -36,12 +36,12 @@ def generate_bbox_cutout(img_size):
 	return bbx1,bbx2,bby1,bby2,bbz1,bbz2
 
 
-init_path='/data4/wanliu/BT_1.7mm_270/HCP_for_training_COPY'
+init_path='/data/BT_1.7mm_270/HCP_for_training_COPY'
 subjects = ['C04']
-labeled_tracts = 4# 4,6,10
+labeled_tracts = 4 # 4,6,10
 bundle_mask = 'bundle_masks_'+str(labeled_tracts)+'.nii.gz'
-log_save_file= '/data4/wanliu/BT_1.7mm_270/TT_daug/Oneshot_C04_4/CutoutYKeep_'+str(labeled_tracts)+'tracts.txt'
-target_path  = '/data4/wanliu/BT_1.7mm_270/TT_daug/Oneshot_C04_4/CutoutYKeep/HCP_for_training_COPY'
+log_save_file= '/data/BT_1.7mm_270/TT_daug/Oneshot_C04_4/CutoutYKeep_'+str(labeled_tracts)+'tracts.txt'
+target_path  = '/data/BT_1.7mm_270/TT_daug/Oneshot_C04_4/CutoutYKeep/HCP_for_training_COPY'
 
 
 used_data_num = len(subjects)

@@ -35,12 +35,12 @@ def bin2list(input_bin):
 
 
 ### for tt
-init_path='/data4/wanliu/BT_1.7mm_270/HCP_for_training_COPY'
+init_path='/data/BT_1.7mm_270/HCP_for_training_COPY'
 subjects = ['C04']
 labeled_tracts = 4 # 4,6,10
 bundle_mask = 'bundle_masks_'+str(labeled_tracts)+'.nii.gz'
-log_save_file= '/data4/wanliu/BT_1.7mm_270/TT_daug/Oneshot_C04_4/MtractoutYKeep_'+str(labeled_tracts)+'tracts.txt'
-target_path  = '/data4/wanliu/BT_1.7mm_270/TT_daug/Oneshot_C04_4/MtractoutYKeep/HCP_for_training_COPY'
+log_save_file= '/data/BT_1.7mm_270/TT_daug/Oneshot_C04_4/MtractoutYKeep_'+str(labeled_tracts)+'tracts.txt'
+target_path  = '/data/BT_1.7mm_270/TT_daug/Oneshot_C04_4/MtractoutYKeep/HCP_for_training_COPY'
 
 
 

@@ -56,32 +56,9 @@ bundles_novel_4 = ['CST_left', 'CST_right','OR_left', 'OR_right']
 bundles_index_4 = [14, 15, 29, 30]
 
 
-def extract_bundle():
-    dir = '/data4/wanliu/HCP_1.25mm_270/HCP_preproc'
-    for sub in HCP_subjects:
-        print(sub)
-        all_bund_file = os.path.join(dir, sub, 'bundle_masks_72.nii.gz')
-        bund_nii =nib.load(all_bund_file)
-        affine=bund_nii.affine
-        header=bund_nii.header
-        bund_data = bund_nii.get_fdata()
-
-        novel_index = np.array(bundles_index).astype(int)
-        bund_12 = bund_data[:,:,:,novel_index].astype(np.float32)
-        bundle_nii = nib.Nifti1Image(bund_12, affine, header)
-        nib.save(bundle_nii, os.path.join(dir, sub, 'bundle_masks_12.nii.gz'))
-
-        other_index = np.array(list(set([*range(72)]) - set(bundles_index))).astype(int)
-        print(other_index)
-        bund_60 = (bund_data[:, :, :, other_index]).astype(np.float32)
-        bundle_nii = nib.Nifti1Image(bund_60, affine, header)
-        nib.save(bundle_nii, os.path.join(dir, sub, 'bundle_masks_60.nii.gz'))
-
-
 
 def extract_bundle_hcp():
-    # dir = '/data4/wanliu/HCP_2.5mm_341k/HCP_for_training_COPY'
-    dir = '/data4/wanliu/HCP_2.5mm_341k/HCP_preproc'
+    dir = '/data/HCP_2.5mm_341k'
     for sub in HCP_subjects:
         print(sub)
         all_bund_file = os.path.join(dir, sub, 'bundle_masks_72.nii.gz')
@@ -107,41 +84,6 @@ def extract_bundle_hcp():
 
 
 
-def extract_bundle_TT():
-    ## for tt
-    bundles_TT = ['CST_left', 'CST_right', 'FPT_left', 'FPT_right', 'OR_left', 'OR_right', 'POPT_left', 'POPT_right',  'UF_left', 'UF_right']
-    bundles_index = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    subjects_TT = ['A00','A01','A02','A03','A04','A05','A06','A07','C00','C01','C02','C03','C04','C05','C06','C07','C08']
-
-    ## extract 4 tracts
-    bundles_TT_4 = ['CST_left', 'CST_right', 'OR_left', 'OR_right']
-    bundles_index_4 = [0, 1, 4, 5]
-
-    ## extract 6 tracts
-    bundles_TT_6 = ['CST_left', 'CST_right','OR_left', 'OR_right', 'POPT_left', 'POPT_right']
-    bundles_index_6 = [0, 1, 4, 5, 6, 7]
-
-    dir = '/data4/wanliu/BT_1.7mm_270/HCP_for_training_COPY/second'
-    for sub in os.listdir(dir):
-    # for sub in subjects_TT:
-        print(sub)
-        all_bund_file = os.path.join(dir, sub, 'bundle_masks_10.nii.gz')
-        bund_nii =nib.load(all_bund_file)
-        affine=bund_nii.affine
-        bund_data = bund_nii.get_fdata()
-
-        novel_index_4 = np.array(bundles_index_4).astype(int)
-        bund_new_4 = bund_data[:,:,:,novel_index_4].astype(np.uint8)
-        bundle_nii_4 = nib.Nifti1Image(bund_new_4, affine)
-        nib.save(bundle_nii_4, os.path.join(dir, sub, 'bundle_masks_4.nii.gz'))
-
-        novel_index_6 = np.array(bundles_index_6).astype(int)
-        bund_new_6 = bund_data[:,:,:,novel_index_6].astype(np.uint8)
-        bundle_nii_6 = nib.Nifti1Image(bund_new_6, affine)
-        nib.save(bundle_nii_6, os.path.join(dir, sub, 'bundle_masks_6.nii.gz'))
-
-
 
 if __name__ == "__main__":
     extract_bundle_hcp()
-    # extract_bundle_TT()
